@@ -1378,7 +1378,7 @@ class MusicBot(discord.Client):
                 if drop_count:
                     print("Dropped %s songs" % drop_count)
 
-            log.info("Processed {} songs in {} seconds at {:.2f}s/song, {:+.2g}/song from expected ({}s)".format(
+            log.info("🔄 Processed {} songs in {} seconds at {:.2f}s/song, {:+.2g}/song from expected ({}s)".format(
                 listlen,
                 fixg(ttime),
                 ttime / listlen if listlen else 0,
@@ -1394,7 +1394,7 @@ class MusicBot(discord.Client):
                     expire_in=30
                 )
 
-            reply_text = "Enqueued **%s** songs to be played. Position in queue: %s"
+            reply_text = "✅ Enqueued **%s** songs to be played. Position in queue: %s"
             btext = str(listlen - drop_count)
 
         else:
@@ -1416,7 +1416,7 @@ class MusicBot(discord.Client):
 
                 return await self.cmd_play(player, channel, author, permissions, leftover_args, e.use_url)
 
-            reply_text = "Enqueued **%s** to be played. Position in queue: %s"
+            reply_text = "✅ Enqueued **%s** to be played. Position in queue: %s"
             btext = entry.title
 
         if position == 1 and player.is_stopped:
@@ -1450,7 +1450,7 @@ class MusicBot(discord.Client):
         t0 = time.time()
 
         busymsg = await self.safe_send_message(
-            channel, "Processing %s songs..." % num_songs)  # TODO: From playlist_title
+            channel, "🔄 Processing %s songs..." % num_songs)  # TODO: From playlist_title
         await self.send_typing(channel)
 
         entries_added = 0
@@ -1718,14 +1718,14 @@ class MusicBot(discord.Client):
             progress_bar_length = 30
             for i in range(progress_bar_length):
                 if (percentage < 1 / progress_bar_length * i):
-                    prog_bar_str += '□'
+                    prog_bar_str += '◽️'
                 else:
-                    prog_bar_str += '■'
+                    prog_bar_str += '◾️'
 
             action_text = 'Streaming' if streaming else 'Playing'
 
             if player.current_entry.meta.get('channel', False) and player.current_entry.meta.get('author', False):
-                np_text = "Now {action}: **{title}** added by **{author}**\nProgress: {progress_bar} {progress}\n\N{WHITE RIGHT POINTING BACKHAND INDEX} <{url}>".format(
+                np_text = "▶️ Now {action}: **{title}** added by **{author}**\nProgress: {progress_bar} {progress}\n\N{WHITE RIGHT POINTING BACKHAND INDEX} <{url}>".format(
                     action=action_text,
                     title=player.current_entry.title,
                     author=player.current_entry.meta['author'].name,
@@ -1734,7 +1734,7 @@ class MusicBot(discord.Client):
                     url=player.current_entry.url
                 )
             else:
-                np_text = "Now {action}: **{title}**\nProgress: {progress_bar} {progress}\n\N{WHITE RIGHT POINTING BACKHAND INDEX} <{url}>".format(
+                np_text = "▶️ Now {action}: **{title}**\nProgress: {progress_bar} {progress}\n\N{WHITE RIGHT POINTING BACKHAND INDEX} <{url}>".format(
                     action=action_text,
                     title=player.current_entry.title,
                     progress_bar=prog_bar_str,
@@ -1831,7 +1831,7 @@ class MusicBot(discord.Client):
 
         player.playlist.shuffle()
 
-        cards = ['\N{BLACK SPADE SUIT}', '\N{BLACK CLUB SUIT}', '\N{BLACK HEART SUIT}', '\N{BLACK DIAMOND SUIT}']
+        cards = ['♠️', '♣️', '♥️', '♦️']
         random.shuffle(cards)
 
         hand = await self.send_message(channel, ' '.join(cards))
@@ -1843,7 +1843,7 @@ class MusicBot(discord.Client):
             await asyncio.sleep(0.6)
 
         await self.safe_delete_message(hand, quiet=True)
-        return Response("\N{OK HAND SIGN}", delete_after=15)
+        return Response("✅", delete_after=15)
 
     async def cmd_clear(self, player, author):
         """
@@ -1854,7 +1854,7 @@ class MusicBot(discord.Client):
         """
 
         player.playlist.clear()
-        return Response('\N{PUT LITTER IN ITS PLACE SYMBOL}', delete_after=20)
+        return Response('🚮', delete_after=20)
 
     async def cmd_skip(self, player, channel, author, message, permissions, voice_channel):
         """
@@ -1937,7 +1937,7 @@ class MusicBot(discord.Client):
         """
 
         if not new_volume:
-            return Response('Current volume: `%s%%`' % int(player.volume * 100), reply=True, delete_after=20)
+            return Response('🔊 Current volume: `%s%%`' % int(player.volume * 100), reply=True, delete_after=20)
 
         relative = False
         if new_volume[0] in '+-':
@@ -1959,7 +1959,7 @@ class MusicBot(discord.Client):
         if 0 < new_volume <= 100:
             player.volume = new_volume / 100.0
 
-            return Response('updated volume from %d to %d' % (old_volume, new_volume), reply=True, delete_after=20)
+            return Response('🔊 updated volume from %d to %d' % (old_volume, new_volume), reply=True, delete_after=20)
 
         else:
             if relative:
@@ -2075,7 +2075,7 @@ class MusicBot(discord.Client):
                     except discord.HTTPException:
                         pass
 
-        return Response('Cleaned up {} message{}.'.format(deleted, 's' * bool(deleted)), delete_after=6)
+        return Response('🗑 Cleaned up {} message{}.'.format(deleted, 's' * bool(deleted)), delete_after=6)
 
     async def cmd_pldump(self, channel, song_url):
         """
@@ -2120,7 +2120,7 @@ class MusicBot(discord.Client):
             fcontent.seek(0)
             await self.send_file(channel, fcontent, filename='playlist.txt', content="Here's the url dump for <%s>" % song_url)
 
-        return Response("\N{OPEN MAILBOX WITH RAISED FLAG}", delete_after=20)
+        return Response("📬", delete_after=20)
 
     async def cmd_listids(self, server, author, leftover_args, cat='all'):
         """
@@ -2177,7 +2177,7 @@ class MusicBot(discord.Client):
             # TODO: Fix naming (Discord20API-ids.txt)
             await self.send_file(author, sdata, filename='%s-ids-%s.txt' % (server.name.replace(' ', '_'), cat))
 
-        return Response("\N{OPEN MAILBOX WITH RAISED FLAG}", delete_after=20)
+        return Response("📬", delete_after=20)
 
 
     async def cmd_perms(self, author, channel, server, permissions):
@@ -2197,7 +2197,7 @@ class MusicBot(discord.Client):
             lines.insert(len(lines) - 1, "%s: %s" % (perm, permissions.__dict__[perm]))
 
         await self.send_message(author, '\n'.join(lines))
-        return Response("\N{OPEN MAILBOX WITH RAISED FLAG}", delete_after=20)
+        return Response("📬", delete_after=20)
 
 
     @owner_only
@@ -2223,7 +2223,7 @@ class MusicBot(discord.Client):
         except Exception as e:
             raise exceptions.CommandError(e, expire_in=20)
 
-        return Response("\N{OK HAND SIGN}", delete_after=20)
+        return Response("🆗", delete_after=20)
 
     async def cmd_setnick(self, server, channel, leftover_args, nick):
         """
@@ -2243,7 +2243,7 @@ class MusicBot(discord.Client):
         except Exception as e:
             raise exceptions.CommandError(e, expire_in=20)
 
-        return Response("\N{OK HAND SIGN}", delete_after=20)
+        return Response("🆗", delete_after=20)
 
     @owner_only
     async def cmd_setavatar(self, message, url=None):
@@ -2268,20 +2268,20 @@ class MusicBot(discord.Client):
         except Exception as e:
             raise exceptions.CommandError("Unable to change avatar: {}".format(e), expire_in=20)
 
-        return Response("\N{OK HAND SIGN}", delete_after=20)
+        return Response("🆗", delete_after=20)
 
 
     async def cmd_disconnect(self, server):
         await self.disconnect_voice_client(server)
-        return Response("\N{DASH SYMBOL}", delete_after=20)
+        return Response("ℹ️", delete_after=20)
 
     async def cmd_restart(self, channel):
-        await self.safe_send_message(channel, "\N{WAVING HAND SIGN}")
+        await self.safe_send_message(channel, "👋")
         await self.disconnect_all_voice_clients()
         raise exceptions.RestartSignal()
 
     async def cmd_shutdown(self, channel):
-        await self.safe_send_message(channel, "\N{WAVING HAND SIGN}")
+        await self.safe_send_message(channel, "👋")
         await self.disconnect_all_voice_clients()
         raise exceptions.TerminateSignal()
 
