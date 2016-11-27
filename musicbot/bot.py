@@ -546,7 +546,7 @@ class MusicBot(discord.Client):
             if server.id not in self.players:
                 if not create:
                     raise exceptions.CommandError(
-                        'css\nThe bot is not in a voice channel. '
+                        'The bot is not in a voice channel. '
                         'Use %ssummon to summon it to your voice channel.' % self.config.command_prefix)
 
                 voice_client = await self.get_voice_client(channel)
@@ -1141,7 +1141,7 @@ class MusicBot(discord.Client):
                 return Response("No such command", delete_after=10)
 
         else:
-            helpmsg = "**ℹ️ Available commands**\n```css"
+            helpmsg = "**ℹ️ Available commands**\n```"
             commands = []
 
             for att in dir(self):
