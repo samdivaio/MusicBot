@@ -546,7 +546,7 @@ class MusicBot(discord.Client):
             if server.id not in self.players:
                 if not create:
                     raise exceptions.CommandError(
-                        'The bot is not in a voice channel.  '
+                        'css\nThe bot is not in a voice channel. '
                         'Use %ssummon to summon it to your voice channel.' % self.config.command_prefix)
 
                 voice_client = await self.get_voice_client(channel)
@@ -1141,7 +1141,7 @@ class MusicBot(discord.Client):
                 return Response("No such command", delete_after=10)
 
         else:
-            helpmsg = "**ℹ️ Available commands**\n```"
+            helpmsg = "**ℹ️ Available commands**\n```css"
             commands = []
 
             for att in dir(self):
@@ -1550,7 +1550,7 @@ class MusicBot(discord.Client):
         await self.send_typing(channel)
         await player.playlist.add_stream_entry(song_url, channel=channel, author=author)
 
-        return Response(":+1:", delete_after=6)
+        return Response("👍", delete_after=6)
 
     async def cmd_search(self, player, channel, author, permissions, leftover_args):
         """
@@ -1718,9 +1718,9 @@ class MusicBot(discord.Client):
             progress_bar_length = 30
             for i in range(progress_bar_length):
                 if (percentage < 1 / progress_bar_length * i):
-                    prog_bar_str += '◽️'
+                    prog_bar_str += '□'
                 else:
-                    prog_bar_str += '◾️'
+                    prog_bar_str += '■'
 
             action_text = 'Streaming' if streaming else 'Playing'
 
