@@ -1132,7 +1132,7 @@ class MusicBot(discord.Client):
             cmd = getattr(self, 'cmd_' + command, None)
             if cmd and not hasattr(cmd, 'dev_cmd'):
                 return Response(
-                    "```\n{}```".format(
+                    "```css\n{}```".format(
                         dedent(cmd.__doc__)
                     ).format(command_prefix=self.config.command_prefix),
                     delete_after=60
@@ -1141,7 +1141,7 @@ class MusicBot(discord.Client):
                 return Response("No such command", delete_after=10)
 
         else:
-            helpmsg = "**ℹ️ Available commands**\n```"
+            helpmsg = "**ℹ️ Available commands**\n```css\n"
             commands = []
 
             for att in dir(self):
@@ -1282,7 +1282,7 @@ class MusicBot(discord.Client):
                 download=False,
                 process=True,    # ASYNC LAMBDAS WHEN
                 on_error=lambda e: asyncio.ensure_future(
-                    self.safe_send_message(channel, "```\n%s\n```" % e, expire_in=120), loop=self.loop),
+                    self.safe_send_message(channel, "```css\n%s\n```" % e, expire_in=120), loop=self.loop),
                 retry_on_error=True
             )
 
