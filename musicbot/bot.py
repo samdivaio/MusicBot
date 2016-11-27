@@ -1282,7 +1282,7 @@ class MusicBot(discord.Client):
                 download=False,
                 process=True,    # ASYNC LAMBDAS WHEN
                 on_error=lambda e: asyncio.ensure_future(
-                    self.safe_send_message(channel, "```css\n%s\n```" % e, expire_in=120), loop=self.loop),
+                    self.safe_send_message(channel, "```\n%s\n```" % e, expire_in=120), loop=self.loop),
                 retry_on_error=True
             )
 
@@ -1681,7 +1681,7 @@ class MusicBot(discord.Client):
                 await self.safe_delete_message(confirm_message)
                 await self.safe_delete_message(response_message)
 
-        return Response("Oh well 🙁}", delete_after=30)
+        return Response("Oh well 🙁", delete_after=30)
 
     async def cmd_np(self, player, channel, server, message):
         """
