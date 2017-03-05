@@ -1,4 +1,4 @@
-import os
+﻿import os
 import sys
 import time
 import shlex
@@ -1234,7 +1234,7 @@ class MusicBot(discord.Client):
         try:
             if server_link:
                 await self.accept_invite(server_link)
-                return Response("👍")
+                return Response("✅")
 
         except:
             raise exceptions.CommandError('Invalid URL provided:\n{}\n'.format(server_link), expire_in=30)
@@ -1282,7 +1282,7 @@ class MusicBot(discord.Client):
                 download=False,
                 process=True,    # ASYNC LAMBDAS WHEN
                 on_error=lambda e: asyncio.ensure_future(
-                    self.safe_send_message(channel, "```\n%s\n```" % e, expire_in=120), loop=self.loop),
+                    self.safe_send_message(channel, "```xl\n%s\n```" % e, expire_in=120), loop=self.loop),
                 retry_on_error=True
             )
 
@@ -1378,7 +1378,7 @@ class MusicBot(discord.Client):
                 if drop_count:
                     print("Dropped %s songs" % drop_count)
 
-            log.info("🆗 Processed {} songs in {} seconds at {:.2f}s/song, {:+.2g}/song from expected ({}s)".format(
+            log.info(" Processed {} songs in {} seconds at {:.2f}s/song, {:+.2g}/song from expected ({}s)".format(
                 listlen,
                 fixg(ttime),
                 ttime / listlen if listlen else 0,
@@ -1520,13 +1520,13 @@ class MusicBot(discord.Client):
         )
 
         if not songs_added:
-            basetext = "No songs were added, all songs were over max duration (%ss)" % permissions.max_song_length
+            basetext = "ℹ️ No songs were added, all songs were over max duration (%ss)" % permissions.max_song_length
             if skipped:
                 basetext += "\nAdditionally, the current song was skipped for being too long."
 
             raise exceptions.CommandError(basetext, expire_in=30)
 
-        return Response("Enqueued {} songs to be played in {} seconds".format(
+        return Response("✅ Enqueued {} songs to be played in {} seconds".format(
             songs_added, fixg(ttime, 1)), delete_after=30)
 
     async def cmd_stream(self, player, channel, author, permissions, song_url):
@@ -1550,7 +1550,7 @@ class MusicBot(discord.Client):
         await self.send_typing(channel)
         await player.playlist.add_stream_entry(song_url, channel=channel, author=author)
 
-        return Response("👍", delete_after=6)
+        return Response("✅", delete_after=6)
 
     async def cmd_search(self, player, channel, author, permissions, leftover_args):
         """
@@ -1759,7 +1759,7 @@ class MusicBot(discord.Client):
         """
 
         if not author.voice_channel:
-            raise exceptions.CommandError('You are not in a voice channel!')
+            raise exceptions.CommandError('❎ You are not in a voice channel!')
 
         voice_client = self.voice_client_in(server)
         if voice_client and server == author.voice_channel.server:
@@ -1805,7 +1805,7 @@ class MusicBot(discord.Client):
             player.pause()
 
         else:
-            raise exceptions.CommandError('Player is not playing.', expire_in=30)
+            raise exceptions.CommandError('⏯ Player is not playing.', expire_in=30)
 
     async def cmd_resume(self, player):
         """
@@ -1819,7 +1819,7 @@ class MusicBot(discord.Client):
             player.resume()
 
         else:
-            raise exceptions.CommandError('Player is not paused.', expire_in=30)
+            raise exceptions.CommandError('⏯ Player is not paused.', expire_in=30)
 
     async def cmd_shuffle(self, channel, player):
         """
@@ -1854,7 +1854,19 @@ class MusicBot(discord.Client):
         """
 
         player.playlist.clear()
-        return Response('🚮', delete_after=20)
+        return Response('🗑', delete_after=20)
+
+    async def cmd_stop(self, player, channel, author, message, permissions, voice_channel):
+        """
+        Usage:
+            {command_prefix}stop
+
+        Stops the music.
+        """
+
+        player.playlist.clear()
+        player.skip()  # check autopause stuff here
+        return Response('⏹ Stopping current queue...', delete_after=20)
 
     async def cmd_skip(self, player, channel, author, message, permissions, voice_channel):
         """
@@ -1873,7 +1885,7 @@ class MusicBot(discord.Client):
                     return Response("ℹ️ The next song (%s) is downloading, please wait." % player.playlist.peek().title)
 
                 elif player.playlist.peek().is_downloaded:
-                    print("🆗 The next song will be played shortly.  Please wait.")
+                    print("ℹ️ The next song will be played shortly.  Please wait.")
                 else:
                     print("Something odd is happening.  "
                           "You might want to restart the bot if it doesn't start working.")
@@ -2014,7 +2026,7 @@ class MusicBot(discord.Client):
 
         if not lines:
             lines.append(
-                '❕ There are no songs queued! Queue something with {}play.'.format(self.config.command_prefix))
+                '❕ There are no songs queued! Queue something with `{}play`.'.format(self.config.command_prefix))
 
         message = '\n'.join(lines)
         return Response(message, delete_after=30)
@@ -2197,7 +2209,7 @@ class MusicBot(discord.Client):
             lines.insert(len(lines) - 1, "%s: %s" % (perm, permissions.__dict__[perm]))
 
         await self.send_message(author, '\n'.join(lines))
-        return Response("📬", delete_after=20)
+        return Response("📬 Check Mail!", delete_after=20)
 
 
     @owner_only
@@ -2223,7 +2235,7 @@ class MusicBot(discord.Client):
         except Exception as e:
             raise exceptions.CommandError(e, expire_in=20)
 
-        return Response("🆗 **New Name Set!**", delete_after=20)
+        return Response("ℹ️ **New Name Set!**", delete_after=20)
 
     async def cmd_setnick(self, server, channel, leftover_args, nick):
         """
@@ -2281,7 +2293,7 @@ class MusicBot(discord.Client):
         raise exceptions.RestartSignal()
 
     async def cmd_shutdown(self, channel):
-        await self.safe_send_message(channel, "🆗 **Shutting Down!**")
+        await self.safe_send_message(channel, "ℹ️ **Shutting Down!**")
         await self.disconnect_all_voice_clients()
         raise exceptions.TerminateSignal()
 
